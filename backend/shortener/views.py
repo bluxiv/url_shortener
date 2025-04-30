@@ -1,5 +1,6 @@
-from rest_framework import generics, permissions, status, serializers
+from rest_framework import generics, permissions, status, serializers, viewsets
 from rest_framework.response import Response
+from rest_framework.filters import OrderingFilter
 from django.db import IntegrityError
 from django.shortcuts import redirect, get_object_or_404
 from django.http import Http404
@@ -12,18 +13,26 @@ from shortener.utils import generate_short_code, get_client_ip
 
 
 # API Views
-
-
-class LinkCreateView(generics.CreateAPIView):
+class LinkViewSet(viewsets.ModelViewSet):
     """
-    API endpoint to create a new short URL.
+    API endpoints for creating, listing, and retrieving Shortened URLs.
 
-    Takes 'url' as input.
-    Returns the details of the created shortened URL including the 'short_url'.
+    Provides:
+    - `POST /api/links/`: Create a new link.
+    - `GET  /api/links/`: List links (ordered by most visits by default).
+    - `GET  /api/links/{short_code}/`: Retrieve a specific link.
     """
 
     serializer_class = LinkSerializer
+    queryset = Link.objects.all()
+    lookup_field = "short_code"
     permission_classes = [permissions.AllowAny]
+
+    filter_backends = [
+        OrderingFilter,
+    ]
+    ordering_fields = ["visit_count", "created_at"]
+    ordering = ["-visit_count"]
 
     def perform_create(self, serializer):
         """
@@ -54,6 +63,15 @@ class LinkCreateView(generics.CreateAPIView):
         raise serializers.ValidationError(
             "Could not generate a unique short code. Please try again."
         )
+
+    def update(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def partial_update(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def destroy(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 def redirect_view(request, short_code):
