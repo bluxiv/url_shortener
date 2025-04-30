@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine # Use a specific version
+    container_name: ${COMPOSE_PROJECT_NAME}_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    networks:
+      - app_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  backend:
+    build: ./backend
+    container_name: ${COMPOSE_PROJECT_NAME}_backend
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      # Mount code for development hot-reloading
+      - ./backend:/app/backend
+    ports:
+      - "${BACKEND_PORT}:8000"
+    environment:
+      # Pass all necessary env vars from the .env file
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DJANGO_DEBUG=${DJANGO_DEBUG}
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - DATABASE_HOST=db # Service name of the database container
+      - DATABASE_PORT=5432 # Internal PostgreSQL port
+      - FRONTEND_PORT=${FRONTEND_PORT} # For CORS settings
+    depends_on:
+      db:
+        condition: service_healthy # Wait for DB to be ready
+    networks:
+      - app_network
+    restart: unless-stopped
+
+  # frontend:
+  #   build: ./frontend
+  #   container_name: ${COMPOSE_PROJECT_NAME}_frontend
+  #   command: npm run dev # Runs Nuxt dev server
+  #   volumes:
+  #     # Mount code for development hot-reloading
+  #     - ./frontend:/app/frontend
+  #     # Mount node_modules as a separate volume to avoid overwriting container node_modules
+  #     - /app/frontend/node_modules
+  #     # Mount .nuxt dir to persist Nuxt build cache/artifacts across restarts
+  #     - /app/frontend/.nuxt
+  #   ports:
+  #     - "${FRONTEND_PORT}:3000" # Map host port to Nuxt's default port
+  #   environment:
+  #     # Pass the API base URL needed by the browser/client-side code
+  #     - NUXT_PUBLIC_API_BASE_URL=${NUXT_PUBLIC_API_BASE_URL}
+  #     # HOST and PORT are used by Nuxt internally if needed, but CMD overrides
+  #     - HOST=0.0.0.0
+  #     - PORT=3000
+  #   depends_on:
+  #     - backend # Optional, ensures backend starts first (doesn't guarantee readiness)
+  #   networks:
+  #     - app_network
+  #   restart: unless-stopped
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  postgres_data: # Define the named volume for DB data persistence

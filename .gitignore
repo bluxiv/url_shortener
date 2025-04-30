@@ -1,0 +1,34 @@
+# Docker
+.env
+docker-compose.override.yml # If you use overrides
+!backend/.env.example # Example env files are ok
+!frontend/.env.example
+
+# Python / Django
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.cache/
+.coverage
+htmlcov/
+venv/
+env/
+staticfiles/
+mediafiles/
+
+# Node / Nuxt
+frontend/node_modules/
+frontend/.nuxt/
+frontend/dist/
+frontend/.output/
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+
+# IDE / OS
+.idea/
+.vscode/
+*.DS_Store
+Thumbs.db

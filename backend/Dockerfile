@@ -1,0 +1,24 @@
+# Use an official Python runtime as a parent image
+FROM python:3.13-alpine
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Set work directory
+WORKDIR /app/backend
+
+# Install dependencies
+# Copy requirements first to leverage Docker cache
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy project code
+COPY . .
+
+# Expose port 8000 for Django dev server
+EXPOSE 8000
+
+# Default command to run the Django development server
+# For production, you would change this to use gunicorn
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
