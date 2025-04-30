@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     # Third-party apps
     "rest_framework",
     "corsheaders",
+    # Custom apps
+    "shortener",
 ]
 
 MIDDLEWARE = [
