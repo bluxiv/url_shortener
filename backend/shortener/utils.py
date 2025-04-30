@@ -1,5 +1,6 @@
 import secrets
 import string
+from rest_framework.pagination import PageNumberPagination
 
 
 def generate_short_code():
@@ -21,3 +22,8 @@ def get_client_ip(request):
         # Fallback to REMOTE_ADDR if X-Forwarded-For is not set.
         ip = request.META.get('REMOTE_ADDR')
     return ip
+
+
+class VisitsPagination(PageNumberPagination):
+    page_size = 24
+    page_size_query_param = "page_size"

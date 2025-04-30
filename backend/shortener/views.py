@@ -8,8 +8,8 @@ from django.utils import timezone
 from django.urls import reverse
 
 from shortener.models import Link, Visit
-from shortener.serializers import LinkSerializer
-from shortener.utils import generate_short_code, get_client_ip
+from shortener.serializers import LinkSerializer, VisitSerializer
+from shortener.utils import generate_short_code, get_client_ip, VisitsPagination
 
 
 # API Views
@@ -90,3 +90,29 @@ def redirect_view(request, short_code):
 
     # Perform the redirect
     return redirect(url_obj.url)
+
+
+class LinkVisitListView(generics.ListAPIView):
+    """
+    API endpoint to list recent visits for a specific Shortened URL.
+
+    Provides:
+    - `GET /api/links/{link_short_code}/visits/`: List visits for the link.
+                                                Ordered by most recent first.
+    """
+
+    serializer_class = VisitSerializer
+    permission_classes = [permissions.AllowAny]
+    pagination_class = VisitsPagination
+
+    def get_queryset(self):
+        """
+        Filter visits based on the 'link_short_code' from the URL
+        """
+        link_short_code = self.kwargs.get("link_short_code")
+        if not link_short_code:
+            return Visit.objects.none()
+
+        link = get_object_or_404(Link, short_code=link_short_code)
+
+        return link.visits.all().order_by("-timestamp")  # type: ignore

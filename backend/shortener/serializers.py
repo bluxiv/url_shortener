@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.conf import settings
-from shortener.models import Link
+from shortener.models import Link, Visit
 from django.urls import reverse
 from django.db.models import Max
 
@@ -42,9 +42,9 @@ class LinkSerializer(serializers.ModelSerializer):
             return None
 
         # Build the absolute base URL (e.g., http://localhost:8000) and append the short code.
-        # Requires urlpattern named 'redirect_short_url'.
+        # Requires urlpattern named 'redirect-short-url'.
         try:
-            path = reverse("redirect_short_url", kwargs={"short_code": obj.short_code})
+            path = reverse("redirect-short-url", kwargs={"short_code": obj.short_code})
             return request.build_absolute_uri(path)
         except Exception:
             # Fallback URL
@@ -55,3 +55,18 @@ class LinkSerializer(serializers.ModelSerializer):
         # This also performs a query per object.
         last_visit = obj.visits.aggregate(latest_visit=Max("timestamp"))
         return last_visit.get("latest_visit")
+
+
+class VisitSerializer(serializers.ModelSerializer):
+    """
+    Serializer for Visit instances.
+    """
+
+    class Meta:
+        model = Visit
+        fields = [
+            "timestamp",
+            "ip_address",
+            "user_agent",
+        ]
+        read_only_fields = fields  # All fields are read-only
