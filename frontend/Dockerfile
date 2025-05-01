@@ -8,9 +8,7 @@ WORKDIR /app/frontend
 # Use `--link` for better pnpm/yarn workspace support if needed
 COPY package*.json ./
 # If using yarn, copy yarn.lock
-# COPY yarn.lock ./
-# If using pnpm, copy pnpm-lock.yaml
-# COPY pnpm-lock.yaml ./
+COPY yarn.lock ./
 
 # Install dependencies based on your package manager
 RUN yarn install --frozen-lockfile

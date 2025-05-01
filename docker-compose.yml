@@ -61,7 +61,7 @@ services:
       - "${FRONTEND_PORT}:3000" # Map host port to Nuxt's default port
     environment:
       # Pass the API base URL needed by the browser/client-side code
-      - NUXT_PUBLIC_API_BASE_URL=${NUXT_PUBLIC_API_BASE_URL}
+      - NUXT_PUBLIC_API_BASE=${NUXT_PUBLIC_API_BASE}
       # HOST and PORT are used by Nuxt internally if needed, but CMD overrides
       - HOST=0.0.0.0
       - PORT=3000
