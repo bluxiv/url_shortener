@@ -24,6 +24,6 @@ def get_client_ip(request):
     return ip
 
 
-class VisitsPagination(PageNumberPagination):
+class CustomPagination(PageNumberPagination):
     page_size = 24
     page_size_query_param = "page_size"

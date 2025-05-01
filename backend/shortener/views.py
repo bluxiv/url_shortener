@@ -9,7 +9,7 @@ from django.urls import reverse
 
 from shortener.models import Link, Visit
 from shortener.serializers import LinkSerializer, VisitSerializer
-from shortener.utils import generate_short_code, get_client_ip, VisitsPagination
+from shortener.utils import generate_short_code, get_client_ip, CustomPagination
 
 
 # API Views
@@ -33,6 +33,7 @@ class LinkViewSet(viewsets.ModelViewSet):
     ]
     ordering_fields = ["visit_count", "created_at"]
     ordering = ["-visit_count"]
+    pagination_class = CustomPagination
 
     def perform_create(self, serializer):
         """
@@ -103,7 +104,7 @@ class LinkVisitListView(generics.ListAPIView):
 
     serializer_class = VisitSerializer
     permission_classes = [permissions.AllowAny]
-    pagination_class = VisitsPagination
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         """

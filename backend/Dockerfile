@@ -19,6 +19,10 @@ COPY . .
 # Expose port 8000 for Django dev server
 EXPOSE 8000
 
+
+# Specify the entrypoint script
+ENTRYPOINT ["/app/backend/entrypoint.sh"]
+
 # Default command to run the Django development server
 # For production, you would change this to use gunicorn
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
