@@ -32,7 +32,7 @@
               color="light-blue"
               append-icon="mdi-open-in-new"
               text="visit"
-              :href="runtimeConfig.public.domainRoot + item.short_code"
+              :href="`http://` + runtimeConfig.public.domainRoot + item.short_code"
               target="_blank"
             />
             <v-btn

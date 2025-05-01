@@ -39,7 +39,7 @@
               color="light-blue"
               prepend-icon="mdi-open-in-new"
               text="visit"
-              :href="runtimeConfig.public.domainRoot + data.short_code"
+              :href="`http://` + runtimeConfig.public.domainRoot + data.short_code"
               target="_blank"
             />
             <template v-if="linkCopied">
