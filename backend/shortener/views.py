@@ -98,7 +98,7 @@ class LinkVisitListView(generics.ListAPIView):
     API endpoint to list recent visits for a specific Shortened URL.
 
     Provides:
-    - `GET /api/links/{link_short_code}/visits/`: List visits for the link.
+    - `GET /api/links/{short_code}/visits/`: List visits for the link.
                                                 Ordered by most recent first.
     """
 
@@ -108,9 +108,9 @@ class LinkVisitListView(generics.ListAPIView):
 
     def get_queryset(self):
         """
-        Filter visits based on the 'link_short_code' from the URL
+        Filter visits based on the 'short_code' from the URL
         """
-        link_short_code = self.kwargs.get("link_short_code")
+        link_short_code = self.kwargs.get("short_code")
         if not link_short_code:
             return Visit.objects.none()
 

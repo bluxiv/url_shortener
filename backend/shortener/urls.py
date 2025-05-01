@@ -10,7 +10,7 @@ urlpatterns = [
     path("", include(router.urls)),  # Include the ViewSet URLs
     # Visits list for a specific link
     path(
-        "api/links/<str:link_short_code>/visits/",
+        "api/links/<str:short_code>/visits/",
         views.LinkVisitListView.as_view(),
         name="link-visit-list",
     ),
