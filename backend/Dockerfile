@@ -16,6 +16,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project code
 COPY . .
 
+# Add execute permissions to the entrypoint script.
+# This is a mandatory step for any script that will be executed.
+RUN chmod +x /app/backend/entrypoint.sh
+
 # Expose port 8000 for Django dev server
 EXPOSE 8000
 
