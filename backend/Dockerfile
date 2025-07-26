@@ -13,8 +13,11 @@ WORKDIR /app/backend
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy project code
-COPY . .
+# Copy ONLY the project source code and entrypoint
+COPY manage.py .
+COPY project ./project
+COPY shortener ./shortener
+COPY entrypoint.sh .
 
 # --- START OF DEBUGGING ---
 # List the contents of the working directory to verify the entrypoint exists
