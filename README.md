@@ -1,7 +1,7 @@
 # A Url Shortener Made With Django & Nuxt using Docker
 
 ## API Endpoints
-- `POST /api/links/`: Create a new link.
+- `POST /api/links/`: Create a new link (takes 'url' as input).
 - `GET  /api/links/`: List links (ordered by most visits by default).
 - `GET  /api/links/{short_code}/`: Retrieve a specific link.
 - `GET  /api/links/{short_code}/visits/`: List visits for the link (ordered by most recent first).
@@ -22,7 +22,7 @@ Rename `.env.example` to `.env` or redefine the following variables:
 * NUXT_PUBLIC_API_BASE
 * NUXT_PUBLIC_DOMAIN_ROOT
 
-## development
+## Development
 ```
 docker compose up --build -d
 ```
