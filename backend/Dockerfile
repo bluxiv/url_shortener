@@ -16,6 +16,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project code
 COPY . .
 
+# --- START OF DEBUGGING ---
+# List the contents of the working directory to verify the entrypoint exists
+# and check its permissions. This will show up in the Coolify build logs.
+RUN ls -la /app/backend
+# --- END OF DEBUGGING ---
+
 # Add execute permissions to the entrypoint script.
 # This is a mandatory step for any script that will be executed.
 RUN chmod +x /app/backend/entrypoint.sh
