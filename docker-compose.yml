@@ -2,7 +2,6 @@
 services:
   db:
     image: postgres:15-alpine # Use a specific version
-    container_name: ${COMPOSE_PROJECT_NAME}_db
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
@@ -21,13 +20,10 @@ services:
 
   backend:
     build: ./backend
-    container_name: ${COMPOSE_PROJECT_NAME}_backend
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       # Mount code for development hot-reloading
       - ./backend:/app/backend
-    ports:
-      - "${BACKEND_PORT}:8000"
     environment:
       # Pass all necessary env vars from the .env file
       - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
@@ -48,7 +44,6 @@ services:
 
   frontend:
     build: ./frontend
-    container_name: ${COMPOSE_PROJECT_NAME}_frontend
     command: yarn dev # Runs Nuxt dev server
     volumes:
       # Mount code for development hot-reloading
@@ -57,8 +52,6 @@ services:
       - /app/frontend/node_modules
       # Mount .nuxt dir to persist Nuxt build cache/artifacts across restarts
       - /app/frontend/.nuxt
-    ports:
-      - "${FRONTEND_PORT}:3000" # Map host port to Nuxt's default port
     environment:
       # Pass the API base URL needed by the browser/client-side code
       - NUXT_PUBLIC_API_BASE=${NUXT_PUBLIC_API_BASE}
